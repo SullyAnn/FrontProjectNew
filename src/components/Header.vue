@@ -22,8 +22,7 @@
 // au clic sur l'icone rechercher ou touche Entrer on veut envoyer requete GET 
 // on veut stocker l'input de l'utilisateur et le mettre dans une variable idProduct qui sera dans la requete que l'on va envoyer 
 import {getProductById} from '@/services/api/requests.js'
-import {getAllProducts} from '@/services/api/requests.js'
-window.onload = getAllProducts();
+
 
 
 export default {
@@ -35,16 +34,10 @@ export default {
 	},
     data(){
         return{
-            allProductsData: [],
             productData: [],
         }
     },
     methods: {
-        async getAllProducts(){
-            this.allProductsData = await getAllProducts();
-            console.log(this.allProductsData)
-        },
-
         async sendGetRequest() {
             let searchValue = document.getElementById('search-input').value
             console.log("request has been sent")
@@ -61,7 +54,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <!-- props = attribut du component p -->
+
 <style>
+
 body{
     height: 100%;
     margin: 0;
