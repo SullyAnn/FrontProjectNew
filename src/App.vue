@@ -1,8 +1,12 @@
 <template>
   <section id="app">
     <Header/>
-    <ProductInfo/>
-    <ProductVisuals/>
+
+    <div id="content">
+      <ProductInfo/>
+      <ProductVisuals/>
+    </div>
+    
 
   </section>
 </template>
@@ -23,11 +27,26 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&display=swap');
+
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Avenir, Helvetica, Arial, Barlow Condensed, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+#content{
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 100px;
+    align-items: center;
+    height: 90vh;
+    background-image: url("./assets/images/background.png");
+    background-repeat: no-repeat;
+    background-size: 80% 125%;
+    background-position: bottom left;
 }
 </style>

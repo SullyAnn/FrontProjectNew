@@ -13,7 +13,7 @@ const getProductById = async function(idProduct) {
         //console.log(data)
     } else {
     new Error(response.statusText)
-    console.log("failure")
+    console.log(response.statusText)
     }
 
     return data;

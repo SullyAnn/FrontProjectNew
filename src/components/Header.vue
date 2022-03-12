@@ -11,7 +11,7 @@
                 <option value="search-by-novascore"></option>
             </select>
             <button  v-on:click="sendGetRequest()"  id="search-submit" type="submit">
-                <img id ="search-image" src="../assets/search-icon.png">
+                <img id ="search-image" src="../assets/images/search-icon.png">
             </button>
         </div>
  
@@ -43,7 +43,7 @@ export default {
             console.log("request has been sent")
 			this.productData = await getProductById(searchValue)
             this.$root.$emit('productData', this.productData);
-		}
+		},
     }
 
 }
@@ -56,6 +56,7 @@ export default {
 <!-- props = attribut du component p -->
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&display=swap');
 
 body{
     height: 100%;
@@ -65,15 +66,16 @@ h1{
     margin: 0;
 }
 header{
-    background-color: #FFFAEC;
+    font-family: 'Barlow Condensed';
+    font-weight: 800;
     padding-block: 20px;
     padding-inline: 60px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-
+    border-bottom: 1px solid #ECECEC;
 }
+
 .search{
     border-bottom: 1px solid grey;
 }
