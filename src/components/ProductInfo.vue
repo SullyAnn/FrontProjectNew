@@ -1,28 +1,30 @@
 <template>
     <section class="product-info-section">
-        <h1 class="product-name">{{productData.product.product_name}}</h1>
+        <h1 class="product-name">{{productItem.product_name}}</h1>
         
         <ul class="product-info-list">
             <li> <strong> Quantity </strong> 
-                <p class="product-quantity product-li-elements"> {{productData.product.quantity}} </p>
+                <p class="product-quantity product-li-elements"> {{productItem.quantity}} </p>
             </li>
             <li> <strong> Brand </strong> 
-                <p class="product-brand produt-li-elements"> {{productData.product.brands}} </p>
+                <p class="product-brand produt-li-elements"> {{productItem.brands}} </p>
             </li>
-            <li> <strong> Components </strong> 
-                <ul class="product-array">
-                    <li class="product-component product-li-elements" > {{productData.product.ingredients_text}} </li>
+            <li> <strong> Allergens </strong> 
+                <p v-if="productItem.allergens == ''"> None </p>
+                <ul class="product-array" v-else>
+                    <li class="product-component product-li-elements" > {{productItem.allergens.replaceAll("en:","")}} </li>
                 </ul>
             </li>
             <li> <strong> Additives </strong> 
-                <p v-if="productData.product.additives_n == 0"> None </p>
+                <p v-if="productItem.additives_n == 0"> None </p>
                 <ul class="product-array" v-else>
-                    <li class=" product-additifs product-li-elements" v-for="item in productData.product.additives_tags" :key="item"> {{item}} </li>
+                    <li class=" product-additifs product-li-elements" v-for="item in productItem.additives_tags" :key="item">{{item.replace('en:', '')}}&nbsp; </li>
                 </ul>
     
             </li>
             <li> <strong> Location </strong> 
-                <p class="product-location product-li-elements"> {{productData.product.countries_imported}} </p>
+                <p v-if="productItem.countries_imported == '' "> None </p>
+                <p class="product-location product-li-elements" v-else> {{productItem.countries_imported}} </p>
             </li>
         </ul>
 
@@ -32,38 +34,50 @@
 <script>
 export default {
     name: 'ProductInfo',
-    data(){
+    props: {
+        productItem: {type:Object, required:true}
+    },
+   /* data(){
         return{
             productData : [],
         }
     },
+      mounted(){
+        this.productData = this.productItem
+    }
 
-    mounted() {
+   /* mounted() {
         this.$root.$on('productData', data => {
         this.productData = data;
         });
-    }
+    }*/
 }
 </script>
 
 <style>
 .product-name{
     font-family: 'Barlow Condensed';
-    font-weight: 900;
+    font-weight: 800;
     font-size: 40px;
     text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: white;
+    line-height: 1em;
 }
 .product-info-section{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    width: 350px;
+    width: 400px;
+    justify-content: center;
 }
 .product-info-list{
     list-style-type: none;
     padding: 0;
     text-align: start;
-    margin-block: 40px;
+    margin-block: 60px;
+    line-height: 2em;
 }
 .product-info-list li{
     flex-direction: row;
@@ -72,6 +86,7 @@ export default {
 }
 .product-info-list strong{
     margin-right: 16px;
+    font-size: 18px;
 }
 .product-array{
     display: flex;
