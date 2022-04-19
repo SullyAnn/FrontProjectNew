@@ -1,19 +1,16 @@
 <template>
   <section id="app">
     <LandingPage/>
-    <Header :isLandingPage="false"/>
+    <Header v-on:requestState="launchRequests" 
+            @searchinputvalue="changeSearchInput" 
+            :isLandingPage="isLandingPage" />
 
     <div v-if="listDisplay==true" class="product-displacement">
-      <Product v-bind:productElement="product"  v-for="product in productDataSorted" :key="product.id"/>
-      
-      <div class="more">
-        <button v-on:click="incrementPage()" class="more-button">more</button>
-      </div>
-      
+      <Product :productElement="product"  v-for="product in productDataSorted.products" :key="product.id"/>
     </div>
 
     <div v-else class="product-displacement">
-      <Product v-bind:productElement="productData.product" />
+      <Product :productElement="productData.product" />
     </div>
 
   </section>
@@ -23,6 +20,8 @@
 import Header from './components/Header.vue'
 import Product from './components/Product.vue'
 import LandingPage from './components/landingPage.vue'
+import {getProductById} from '@/services/api/requests.js'
+import {getProductByNutriscore} from '@/services/api/requests.js'
 
 
 export default {
@@ -38,20 +37,38 @@ export default {
             productData : [],
             listDisplay: true,
             pageCount : 1,
-            value : ""
+            value : "",
+            valueSelected: "",
+            scoreGrade: "",
+            searchInput: "",
+            isLandingPage: true,
         }
     },
-    methods:{
-      incrementPage(){
-        this.pageCount ++
-        this.$emit('pageCount', this.pageCount);
-        this.$root.$on('value', data => {
-          this.value = data
-        })
-        
-      }
+    mounted(){
+      /*this.$on("valueSelected", data => {
+        this.valueSelected = data;
+        console.log("test app")
+        console.log(this.valueSelected)
+      }),
+      this.$on("isLanding", data => {
+        this.isLandingPage = data;
+        console.log(data, "landigPage")
+      })
+
+      this.$on("scoreGrade", data => {
+        this.listDisplay = true
+        this.scoreGrade = data;
+      })*/
+      /*this.$on("requestState", () =>{
+        this.launchRequests()
+      })/*
+      this.$on("searchInput", data => {
+        this.listDisplay = false
+        console.log(data)
+        this.searchInput = data
+      })*/
     },
-    mounted() {
+    /*mounted() {
         this.$root.$on('productDataBySorting', data => {
         this.listDisplay = true;
         // on essaie de faire un bouton voir plus qui au clic lance la requete et si la page count > 1 alors on push ds le tableau sinon ça prend la valeur 
@@ -70,7 +87,55 @@ export default {
         this.productData = data;
         console.log(this.productData)
         });
-    },
+    },*/
+    methods: {
+      changeSearchInput(value){
+          this.searchInput = value;
+          this.listDisplay = false
+          console.log(value, "searchInput in App ")
+        },
+
+      async sendGetRequestWithBareCode() {
+        // envoie une requete avec le code barre
+        this.listDisplay = false; 
+                console.log("request has been sent with bare code")
+                this.productData = await getProductById(this.searchInput)
+                console.log(this.productData.product)
+                
+                //this.$root.$emit('productData', this.productData);
+        },
+        async sendGetRequestBySorting(){
+        // envoie une requete par tri 
+        this.listDisplay = true
+        console.log('apppppp')
+            console.log("request has been sent by sorting")
+            this.productDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)       
+        },
+        async disapear(){
+          this.$root.$emit("test2", this.isLandingPage)
+        },
+
+
+        launchRequests(){
+        // lance les requetes par code bare ou par tri
+            let myFunction;
+            console.log("launchRequest")
+
+
+            if(this.searchInput!=""){
+                myFunction = this.sendGetRequestWithBareCode
+            } else if (this.valueSelected!="" && this.searchInput=="") {
+                myFunction = this.sendGetRequestBySorting
+            } 
+            this.$emit("spinner")
+    
+            myFunction((this.scoreGrade, this.pageCurrent)).then(() => this.disapear());
+            this.searchInput = ""
+        },
+
+        
+      
+    }
 }
 </script>
 
@@ -92,7 +157,7 @@ html, body{
   height: 100%;
   background-image: url("./assets/images/Vector.svg");
   background-repeat: no-repeat;
-    background-size: 46%;
+    background-size: 41%;
     background-attachment: fixed;
   background-position: top left;
 }
@@ -102,40 +167,6 @@ html, body{
     width: 100%;
     padding-inline: 150px;
     height: 100%;
-}
-
-.more{
- align-self: center;
-    width: max-content;
-    scroll-snap-align: start;
-    border: none;
-    background-color: unset;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-block: 20px;
-}
-.more-button{
-  width: max-content;
-  border: none;
-  background-color: unset;
-  text-transform: uppercase;
-    cursor: pointer;
-  color: #373737;
-}
-
-.more::after{
-content: "";
-    width: 0px;
-    /* height: 2px; */
-    border: 1px solid;
-    /* color: #373737; */
-    position: absolute;
-    margin-top: 30px;
-    transition: 0.5s ease;
-}
-.more:hover::after{
-  width:50px;
 }
 
 

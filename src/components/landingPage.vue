@@ -43,6 +43,7 @@ export default {
     display: flex;
     flex-direction: column;
     background-color: unset;
+    justify-content: space-between;
 }
 .main-header > h1 {
     font-size: 64px;

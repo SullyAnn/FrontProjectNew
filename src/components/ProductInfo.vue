@@ -58,7 +58,7 @@ export default {
 .product-name{
     font-family: 'Barlow Condensed';
     font-weight: 800;
-    font-size: 40px;
+    font-size: 54px;
     text-align: left;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -69,7 +69,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    width: 400px;
+    width: 450px;
     justify-content: center;
 }
 .product-info-list{

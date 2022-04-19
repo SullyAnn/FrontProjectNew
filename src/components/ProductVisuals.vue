@@ -62,7 +62,7 @@ export default {
     align-items: center;
     flex-direction: column-reverse;
     padding-top: 100px;
-    width: 50%;
+    width: 55%;
 }
 .product-image > img{
     object-fit: cover;
