@@ -24,11 +24,14 @@
                 <option value="e">E</option>
             </select>
 
-            <button  v-if="isLandingPage" v-on:click="changeRequestState" id="search-submit" type="submit">
+            <button v-if="isLandingPage" 
+            
+                v-on:click="changeRequestState" id="search-submit" type="submit">
                 <img id ="search-image" src="../assets/images/search-icon.png">
             </button>
 
-             <button  v-else v-on:click="changeRequestState; loadingPage"  id="search-submit" type="submit">
+            <button  v-else 
+                v-on:click="changeRequestState(); loadingPage()"  id="search-submit" type="submit">
                 <img id ="search-image" src="../assets/images/search-icon.png">
             </button>
         </div>
@@ -58,29 +61,14 @@ export default {
             scoreGrade: "",
             isRequestLaunched: false,
         }
-    },
+    },  
     mounted(){
-        /*this.$root.$on("spinner", ()=> {
-            this.createSpinner()
-        }),*/
-
-/*        this.$root.$on("test2", data => {
-            this.disappear(data);
-        })*/
+        this.$root.$on("disappear", () => {
+            this.disappear()
+        })
     },
-/*
-    watch: {
-       valueSelected: function(newValue){
-           localStorage.setItem("valueSelected", newValue)
-       },
-       scoreGrade: function(newScoreGrade){
-           localStorage.setItem("scoreGrade", newScoreGrade)
-           console.log(this.newScoreGrade)
-       }
-    },*/
-   
     methods: {
-       /* onValueSelectedChanged(){
+        onValueSelectedChanged(){
         //this.valueSelected = event.target.value
             this.$emit('valueSelected', this.valueSelected)
             console.log("emit value")
@@ -91,16 +79,23 @@ export default {
             console.log ("emit score")
 
            // console.log(this.scoreGrade)
-        },*/
+        },
         changeRequestState(){
-           // this.isRequestLaunched = true
+           this.isRequestLaunched = true
            // réunir les functions ds un tableau
-           this.onInputChanged()
-           //this.onScoreGradeChanged(this.scoreGrade)
-           //this.onValueSelectedChanged(this.valueSelected)
-           // this.$emit("requestState")
-           // this.$emit('isLanding', false)
+
+            if(this.searchInput!=""){
+                this.onInputChanged()
+           } else if (this.valueSelected!="" && this.searchInput==""){
+                this.onValueSelectedChanged(this.valueSelected)
+                this.onScoreGradeChanged(this.scoreGrade)
+           }
+           this.$emit("requestState")
+           this.$emit('isLanding', false)
             console.log('changeRequestState')
+            console.log(this.valueSelected)
+            console.log(this.scoreGrade)
+            this.createSpinner()
             
             //console.log(this.isRequestLaunched)
         },
@@ -108,29 +103,7 @@ export default {
             this.$emit("searchinputvalue", this.searchInput)
             console.log(this.searchInput)
         },
-    
-        //mettre tout ça dans app et faire remonter info dans l'app ou tout mettre ds un fihcier JS 
-       /* async sendGetRequestWithBareCode() {
-        // envoie une requete avec le code barre 
-                console.log("request has been sent with bare code")
-                this.productData = await getProductById(this.searchInput)
-                this.$root.$emit('productData', this.productData);
-        },
-        async sendGetRequestBySorting(value, pageCurrent){
-        // envoie une requete par tri 
-            console.log(this.scoreGrade)
-                
-            console.log("request has been sent by sorting")
-            console.log(value)
-            this.productData = await getProductByNutriscore(value, pageCurrent)
-            this.$root.$emit('productDataBySorting', this.productData);          
-        },
-        sortByNutriscore(){
-        // récupère la valeur du nutriscore 
-            let value =  document.getElementById('search-by-score').value
-            this.valueSelected = value
-            this.searchInput = ""
-        },*/
+
 
         disappear(isLanding){
         // fait disparaitre les pages de chargement 
@@ -185,7 +158,7 @@ export default {
                 loadingPage.classList.add('loading-in')
                 loadingPage.appendChild(spinner)
             }
-        }   
+        }  
     },
 }
 </script>

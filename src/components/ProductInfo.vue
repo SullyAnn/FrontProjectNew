@@ -1,5 +1,5 @@
 <template>
-    <section class="product-info-section">
+    <section v-if="productItem" class="product-info-section">
         <h1 class="product-name">{{productItem.product_name}}</h1>
         
         <ul class="product-info-list">
@@ -35,7 +35,7 @@
 export default {
     name: 'ProductInfo',
     props: {
-        productItem: {type:Object, required:true}
+        productItem: {type:Object}
     },
    /* data(){
         return{

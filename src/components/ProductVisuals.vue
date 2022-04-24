@@ -1,5 +1,5 @@
 <template>
-    <section class="product-visuals-section">
+    <section v-if="productItem" class="product-visuals-section">
 
         <div class="product-scores">
             <p class="nutri-score" v-if="productItem.nutriscore_grade == 'a' "> <img src="@/assets/images/nutriscore_A.png"></p>
@@ -36,7 +36,7 @@
 export default {
     name: 'ProductVisuals',
     props: {
-        productItem: {type:Object, required:true}
+        productItem: {type:Object}
     },
   /*  data(){
         return{

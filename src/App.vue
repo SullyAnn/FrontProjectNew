@@ -1,9 +1,15 @@
 <template>
   <section id="app">
-    <LandingPage/>
-    <Header v-on:requestState="launchRequests" 
-            @searchinputvalue="changeSearchInput" 
-            :isLandingPage="isLandingPage" />
+    <LandingPage ref='header'  v-on:searchinputvalue="changeSearchInput"
+                  v-on:valueSelected="changeValueSelected"
+                  v-on:scoreGrade="changeScoreGrade"
+                  v-on:requestState="launchRequests"
+                  v-on:isLanding="changeLandingPage"/>
+    <Header ref='header' :isLandingPage="isLandingPage" 
+                  v-on:searchinputvalue="changeSearchInput"
+                  v-on:valueSelected="changeValueSelected"
+                  v-on:scoreGrade="changeScoreGrade"
+                  v-on:requestState="launchRequests"/>
 
     <div v-if="listDisplay==true" class="product-displacement">
       <Product :productElement="product"  v-for="product in productDataSorted.products" :key="product.id"/>
@@ -41,59 +47,24 @@ export default {
             valueSelected: "",
             scoreGrade: "",
             searchInput: "",
-            isLandingPage: true,
+            isLandingPage: false,
         }
     },
-    mounted(){
-      /*this.$on("valueSelected", data => {
-        this.valueSelected = data;
-        console.log("test app")
-        console.log(this.valueSelected)
-      }),
-      this.$on("isLanding", data => {
-        this.isLandingPage = data;
-        console.log(data, "landigPage")
-      })
-
-      this.$on("scoreGrade", data => {
-        this.listDisplay = true
-        this.scoreGrade = data;
-      })*/
-      /*this.$on("requestState", () =>{
-        this.launchRequests()
-      })/*
-      this.$on("searchInput", data => {
-        this.listDisplay = false
-        console.log(data)
-        this.searchInput = data
-      })*/
-    },
-    /*mounted() {
-        this.$root.$on('productDataBySorting', data => {
-        this.listDisplay = true;
-        // on essaie de faire un bouton voir plus qui au clic lance la requete et si la page count > 1 alors on push ds le tableau sinon ça prend la valeur 
-        if(this.pageCount > 1){
-          this.productDataSorted.push(data.products)
-        } else {
-          this.productDataSorted = data.products;
-          console.log(this.productDataSorted)
-        }
-        
-        });
-
-        this.$root.$on('productData', data => {
-        this.listDisplay = false;
-        this.productDataSorted = ""
-        this.productData = data;
-        console.log(this.productData)
-        });
-    },*/
     methods: {
       changeSearchInput(value){
           this.searchInput = value;
           this.listDisplay = false
           console.log(value, "searchInput in App ")
         },
+      changeValueSelected(value){
+        this.valueSelected = value
+      },
+      changeScoreGrade(value){
+        this.scoreGrade = value
+      },
+      changeLandingPage(value){
+        this.isLandingPage = value;
+      },
 
       async sendGetRequestWithBareCode() {
         // envoie une requete avec le code barre
@@ -111,10 +82,9 @@ export default {
             console.log("request has been sent by sorting")
             this.productDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)       
         },
-        async disapear(){
-          this.$root.$emit("test2", this.isLandingPage)
+        async disappear(){
+          this.$root.$emit('disappear', this.isLandingPage)
         },
-
 
         launchRequests(){
         // lance les requetes par code bare ou par tri
@@ -128,8 +98,9 @@ export default {
                 myFunction = this.sendGetRequestBySorting
             } 
             this.$emit("spinner")
-    
-            myFunction((this.scoreGrade, this.pageCurrent)).then(() => this.disapear());
+            console.log(this.valueSelected)
+            console.log(myFunction)
+            myFunction((this.scoreGrade, this.pageCurrent)).then(() => this.disappear());
             this.searchInput = ""
         },
 
