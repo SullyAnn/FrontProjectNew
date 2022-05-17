@@ -12,12 +12,14 @@
                   v-on:requestState="launchRequests"/>
 
     <div v-if="listDisplay==true" class="product-displacement">
-      <Product :productElement="product"  v-for="product in productDataSorted.products" :key="product.id"/>
+      <Product :productElement="product"  v-for="product in ProductOrganizedData" :key="product.id"/>
     </div>
 
     <div v-else class="product-displacement">
       <Product :productElement="productData.product" />
     </div>
+
+  <SortProduct :productSortType.sync="productSortType" v-if="isLandingPage==false"/>
 
   </section>
 </template>
@@ -26,6 +28,7 @@
 import Header from './components/Header.vue'
 import Product from './components/Product.vue'
 import LandingPage from './components/landingPage.vue'
+import SortProduct from './components/SortProduct.vue'
 import {getProductById} from '@/services/api/requests.js'
 import {getProductByNutriscore} from '@/services/api/requests.js'
 
@@ -36,6 +39,7 @@ export default {
     Header,
     Product,
     LandingPage,
+    SortProduct,
   },
   data(){
         return{
@@ -47,8 +51,30 @@ export default {
             valueSelected: "",
             scoreGrade: "",
             searchInput: "",
-            isLandingPage: false,
+            isLandingPage: true,
+            productSortType: localStorage.getItem("productSortType") || "AZName"
         }
+    },
+      watch: {
+    productSortType: function(newValue){
+      localStorage.setItem("productSortType", newValue)
+    }
+  }, 
+    computed: {
+      ProductOrganizedData(){
+        let productDatas =  this.productDataSorted.products
+
+        if(productDatas){
+          const reversed = ['ZAName'].includes(this.productSortType)
+          const comparator = (a,b) => a['product_name'].localeCompare(b['product_name'])
+          productDatas = productDatas.sort(comparator)
+          if(reversed) productDatas = productDatas.reverse()
+
+        }     
+          return productDatas  
+          
+
+      }
     },
     methods: {
       changeSearchInput(value){

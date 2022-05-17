@@ -9,6 +9,7 @@
         <h1 v-else class="header-content"> FOOD INFO</h1>
 
         <div class="search">
+            <button v-if="searchInput" @click="clearSearch"> Clear </button>
             <input v-model="searchInput"  class="search-input" type="text" name="user" placeholder="Tap the product name of sort by score">
             <select v-model="valueSelected"  id="search-by-score">
                 <option disabled value=""> Option de tri </option>
@@ -158,7 +159,10 @@ export default {
                 loadingPage.classList.add('loading-in')
                 loadingPage.appendChild(spinner)
             }
-        }  
+        }, 
+        clearSearch(){
+            this.searchInput =""
+        } 
     },
 }
 </script>
