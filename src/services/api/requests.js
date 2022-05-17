@@ -10,6 +10,7 @@ const getProductById = async function(idProduct) {
     if (response.status == 200) {
         data = response.json()
         console.log("getProductById request success!")
+        console.log(data)
     } else {
     new Error(response.statusText)
     console.log("getProductById request failed")

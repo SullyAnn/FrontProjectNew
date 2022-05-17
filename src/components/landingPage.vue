@@ -1,6 +1,12 @@
 <template>
     <div class="landing-page">
-        <Header class="main-header" :isLandingPage="true"/>
+        <Header ref="header" v-on:searchinputvalue="$emit('searchinputvalue',$event) "
+                v-on:valueSelected="$emit('valueSelected', $event)"
+                v-on:scoreGrade="$emit('scoreGrade', $event)"
+                v-on:requestState="$emit('requestState')"
+                v-on:isLanding="$emit('isLanding', $event)"
+                v-on:disappear="launchDisappear"
+        class="main-header" :isLandingPage="true"/>
     </div>
 </template>
 
@@ -10,10 +16,20 @@ import Header from './Header.vue'
 
 export default {
     name: 'LandingPage',
+    props: {
+        valueSelected: {type:String},
+        scoreGrade: {type:String},
+    },
     components: {
         Header,
     },
     methods: {
+        changeSearchInput(){
+            console.log("test landing page")
+        },
+        launchDisappear(value){
+            this.$refs.header.disappear(value)
+        }
         
     }
 }
@@ -43,6 +59,7 @@ export default {
     display: flex;
     flex-direction: column;
     background-color: unset;
+    justify-content: space-between;
 }
 .main-header > h1 {
     font-size: 64px;

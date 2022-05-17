@@ -16,7 +16,7 @@ export default {
         ProductVisuals,
     },
     props: {
-        productElement: {type: Object, required:true}
+        productElement: {type: Object}
     }
 }
 </script>

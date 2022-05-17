@@ -1,11 +1,18 @@
 <template>
     <header>
+        
+        <!--- Titre Landing page --->
+        <h1 v-if="isLandingPage" v-responsive.lg.xl> FOOD INFO </h1>
+        <h1 v-if="isLandingPage" v-responsive.sm.xs id="responsive-header-title"> FOOD INFO </h1>
 
-        <h1> FOOD INFO </h1>
+        <!--- Titre Content page --->
+        <h1 v-else class="header-content"> FOOD INFO</h1>
 
         <div class="search">
-            <input v-model="searchInput"  id="search-input" type="text" name="user" placeholder="Tap the product name of sort by score">
-            <select v-on:click="sortByNutriscore()" id="search-by-score">
+            <button v-if="searchInput" @click="clearSearch"> Clear </button>
+            <input v-model="searchInput"  class="search-input" type="text" name="user" placeholder="Tap the product name of sort by score">
+            <select v-model="valueSelected"  id="search-by-score">
+                <option disabled value=""> Option de tri </option>
                 <option value="search-by-nutriscore">nutriscore</option>
                 <option value="search-by-ecoscore">ecoscore</option>
                 <option value="search-by-novascore">novascore</option>
@@ -18,14 +25,18 @@
                 <option value="e">E</option>
             </select>
 
-            <button  v-if="isLandingPage" v-on:click="launchRequests() "  id="search-submit" type="submit">
+            <button v-if="isLandingPage" 
+            
+                v-on:click="changeRequestState" id="search-submit" type="submit">
                 <img id ="search-image" src="../assets/images/search-icon.png">
             </button>
 
-             <button  v-else v-on:click="sendGetRequestWithBareCode(); sendGetRequestBySorting(scoreGrade); "  id="search-submit" type="submit">
+            <button  v-else 
+                v-on:click="changeRequestState(); loadingPage()"  id="search-submit" type="submit">
                 <img id ="search-image" src="../assets/images/search-icon.png">
             </button>
         </div>
+        <div v-if="!isLandingPage" class="loading-page"></div>
  
     </header>    
 </template>
@@ -33,8 +44,8 @@
 <script>
 // au clic sur l'icone rechercher ou touche Entrer on veut envoyer requete GET 
 // on veut stocker l'input de l'utilisateur et le mettre dans une variable idProduct qui sera dans la requete que l'on va envoyer 
-import {getProductById} from '@/services/api/requests.js'
-import {getProductByNutriscore} from '@/services/api/requests.js'
+/*import {getProductById} from '@/services/api/requests.js'
+import {getProductByNutriscore} from '@/services/api/requests.js'*/
 
 
 
@@ -42,71 +53,81 @@ export default {
     name: 'Header',
     props: {
         isLandingPage: {type:Boolean},
-	},
+    },
     data(){
         return{
-            productData: [],
             searchInput: "",
-            valueSelected: "",
+            pageCurrent: 1,
+            valueSelected:"",
             scoreGrade: "",
-            pageCurrent: 1
+            isRequestLaunched: false,
         }
+    },  
+    mounted(){
+        this.$root.$on("disappear", () => {
+            this.disappear()
+        })
     },
-   
     methods: {
-        //mettre tout ça dans app et faire remonter info dans l'app ou tout mettre ds un fihcier JS 
-        async sendGetRequestWithBareCode() {
-           // if(this.searchInput!=""){
-                console.log("request has been sent with bare code")
-                this.productData = await getProductById(this.searchInput)
-                this.$root.$emit('productData', this.productData);
-          //  }
+        onValueSelectedChanged(){
+        //this.valueSelected = event.target.value
+            this.$emit('valueSelected', this.valueSelected)
+            console.log("emit value")
+            console.log(this.valueSelected)
         },
-        async sendGetRequestBySorting(value, pageCurrent){
-            //IF SENT BY SORTING
-                //value = this.scoreGrade
-                console.log(this.scoreGrade)
-                //if(this.valueSelected!="" && this.searchInput==""){
-                
-                console.log("request has been sent by sorting")
-                console.log(value)
-             //   pageCurrent = this.pageCurrent
-                this.productData = await getProductByNutriscore(value, pageCurrent)
-                this.$root.$emit('productDataBySorting', this.productData);
-                
-        }, /*
-         async sendNextPage(value, pageCurrent){
-            //IF SENT BY SORTING
-                value = this.scoreGrade
-                console.log(this.scoreGrade)
-                if(this.valueSelected!="" && this.searchInput==""){
-                pageCurrent = this.pageCurrent
-                console.log("request has been sent by sorting ++")
-                this.productData = await getProductByNutriscore(value)
-                this.productData
-                this.$root.$emit('productDataBySorting', this.productData);
-                }    */
+        onScoreGradeChanged(){
+            this.$emit('scoreGrade', this.scoreGrade)
+            console.log ("emit score")
 
-        sortByNutriscore(){
-            let value =  document.getElementById('search-by-score').value
-            this.valueSelected = value
-            this.searchInput = ""
+           // console.log(this.scoreGrade)
         },
-        disappear(){
+        changeRequestState(){
+           this.isRequestLaunched = true
+           // réunir les functions ds un tableau
 
-            //lancer une fois que la requet asynchrone
+            if(this.searchInput!=""){
+                this.onInputChanged()
+           } else if (this.valueSelected!="" && this.searchInput==""){
+                this.onValueSelectedChanged(this.valueSelected)
+                this.onScoreGradeChanged(this.scoreGrade)
+           }
+           this.$emit("requestState")
+           this.$emit('isLanding', false)
+            console.log('changeRequestState')
+            console.log(this.valueSelected)
+            console.log(this.scoreGrade)
+            this.createSpinner()
+            
+            //console.log(this.isRequestLaunched)
+        },
+        onInputChanged: function(){
+            this.$emit("searchinputvalue", this.searchInput)
+            console.log(this.searchInput)
+        },
+
+
+        disappear(isLanding){
+        // fait disparaitre les pages de chargement 
+            isLanding = this.isLandingPage 
+            let loadingPage =  document.querySelector('.loading-page')
             let loader = document.querySelector('.loader')
-            loader.parentElement.removeChild(loader);
+        // si Landing page
+            if(isLanding){
+                let landing = document.querySelector(".landing-page");
+                let landingHeader = document.querySelector(".main-header");
 
-            let landing = document.querySelector(".landing-page");
-            let landingHeader = document.querySelector(".main-header");
-
-            landingHeader.style.display = 'none'
-            landing.style.height ='0'
-        
-        },        
-        
-        launchRequests(){
+                landingHeader.style.display = 'none'
+                landing.style.height ='0'
+            } else {
+        // si page de chargement
+                loadingPage.classList.replace('loading-in','loading-out')
+                if (loader.parentNode) {
+                loader.parentNode.removeChild(loader);
+                }
+            }        
+        }, 
+        /*launchRequests(){
+        // lance les requetes par code bare ou par tri
             let myFunction;
 
             if(this.searchInput!=""){
@@ -114,25 +135,36 @@ export default {
             } else if (this.valueSelected!="" && this.searchInput=="") {
                 myFunction = this.sendGetRequestBySorting
             } 
-            //ajouter loader 
             this.createSpinner();
             myFunction(this.scoreGrade, this.pageCurrent).then(this.disappear)
-        },
+        },*/
         createSpinner(){
-           let spinner =  document.createElement('div')
+        // crée un loader qui permet de faire patienter l'utilisateur
+            let spinner =  document.createElement('div')
             let header = document.querySelector('header')
             header.appendChild(spinner)
+            spinner.classList.add('loader')
+        },
+        loadingPage(){
+        // crée une page de chargement 
+            let loadingPage =  document.querySelector('.loading-page')
+            let spinner =  document.createElement('div')
+            spinner.classList.add('loader')
 
-           spinner.classList.add('loader')
-           console.log('spinner')
-           console.log(spinner)
-        }
-        
+            console.log(loadingPage)
+            if(loadingPage.classList.contains('loading-out')){
+                loadingPage.classList.replace('loading-out', 'loading-in')
+                loadingPage.appendChild(spinner)
+            }else{
+                loadingPage.classList.add('loading-in')
+                loadingPage.appendChild(spinner)
+            }
+        }, 
+        clearSearch(){
+            this.searchInput =""
+        } 
     },
-
 }
-
-
 </script>
  
 
@@ -156,14 +188,20 @@ header{
     display: flex;
     align-items: center;
     position: fixed;
-    width: 50%;
+    width: 55%;
     right: 0;
-    justify-content: space-between;
+    justify-content: center;
     background-color: white;
+}
+.header-content {
+    position: fixed;
+    left: 150px;
 }
 
 .search{
     border-bottom: 1px solid grey;
+    display: flex;
+    align-items: center;
 }
 
 #search-submit{
@@ -178,7 +216,7 @@ header{
     border: none;
     background-color: rgba(255,255,255,0);
 }
-#search-input{
+.search-input{
     width: 400px;
     border: none;
     background-color: rgba(255,255,255,0);
@@ -188,6 +226,33 @@ header{
 #search-image{
     width: 24px;
 }
+/*---------------- LOADING PAGE  ---------------*/
+.loading-page{
+   position: fixed;
+    overflow: hidden;
+    height: 100vh;
+    width: 0px;
+    z-index: 20;
+    top: 0;
+    left: 0;
+    background-color: #B8E8A7;
+    transition: 0.5s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:white;
+    font-size: 48px;
+
+}
+.loading-in{
+    width: 100vw;
+}
+.loading-out{
+    width: 0;
+}
+
+
+/*---------------- LOADER ELEMENT  ---------------*/
 
 .loader,
 .loader:before,
@@ -212,7 +277,6 @@ header{
   -webkit-animation-delay: -0.16s;
   animation-delay: -0.16s;
 }
-
 .loader:before,
 .loader:after {
   content: '';
@@ -248,4 +312,10 @@ header{
   }
 }
 
+/*---------------- RESPONSIVE  ---------------*/
+
+
+#responsive-header-title{
+    font-size: 24px;
+}
 </style>
