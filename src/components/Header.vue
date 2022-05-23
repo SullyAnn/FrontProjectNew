@@ -9,25 +9,25 @@
         <h1 v-else class="header-content"> FOOD INFO</h1>
 
         <div class="search">
-            <button v-if="searchInput" @click="clearSearch"> Clear </button>
+            <button class="button" v-if="searchInput" @click="clearSearch"> Clear </button>
             <input v-model="searchInput"  class="search-input" type="text" name="user" placeholder="Tap the product name of sort by score">
             <select v-model="valueSelected"  id="search-by-score">
                 <option disabled value=""> Option de tri </option>
                 <option value="search-by-nutriscore">nutriscore</option>
-                <option value="search-by-ecoscore">ecoscore</option>
-                <option value="search-by-novascore">novascore</option>
             </select>
-            <select class="scores" v-model="scoreGrade" v-if="valueSelected == 'search-by-nutriscore'">
+
+            <select class="scores" v-model="scoreGrade" v-if="valueSelected">
                 <option value="a">A</option>
                 <option value="b">B</option>
                 <option value="c">C</option>
                 <option value="d">D</option>
                 <option value="e">E</option>
             </select>
+            
 
             <button v-if="isLandingPage" 
             
-                v-on:click="changeRequestState" id="search-submit" type="submit">
+                v-on:click="changeRequestState()" id="search-submit" type="submit">
                 <img id ="search-image" src="../assets/images/search-icon.png">
             </button>
 
@@ -108,6 +108,7 @@ export default {
 
         disappear(isLanding){
         // fait disparaitre les pages de chargement 
+        // on envoie false ds app comme ça on display none le sort az
             isLanding = this.isLandingPage 
             let loadingPage =  document.querySelector('.loading-page')
             let loader = document.querySelector('.loader')
@@ -126,18 +127,7 @@ export default {
                 }
             }        
         }, 
-        /*launchRequests(){
-        // lance les requetes par code bare ou par tri
-            let myFunction;
-
-            if(this.searchInput!=""){
-                myFunction = this.sendGetRequestWithBareCode
-            } else if (this.valueSelected!="" && this.searchInput=="") {
-                myFunction = this.sendGetRequestBySorting
-            } 
-            this.createSpinner();
-            myFunction(this.scoreGrade, this.pageCurrent).then(this.disappear)
-        },*/
+        
         createSpinner(){
         // crée un loader qui permet de faire patienter l'utilisateur
             let spinner =  document.createElement('div')
@@ -147,6 +137,8 @@ export default {
         },
         loadingPage(){
         // crée une page de chargement 
+           this.$emit("loadingPage", true)
+
             let loadingPage =  document.querySelector('.loading-page')
             let spinner =  document.createElement('div')
             spinner.classList.add('loader')
@@ -192,6 +184,7 @@ header{
     right: 0;
     justify-content: center;
     background-color: white;
+    z-index: 1;
 }
 .header-content {
     position: fixed;
@@ -225,6 +218,21 @@ header{
 }
 #search-image{
     width: 24px;
+}
+.button{
+    background-color: white;
+    border: 1px solid;
+    border-color: #B8E8A7;
+    border-radius: 30px;
+    margin-right: 10px;
+    transition: 0.5s ease;
+    padding: 5px 10px;
+    font-variant-caps: all-petite-caps;
+}
+
+.button:hover{
+    background-color: #B8E8A7;
+    border-color: white;
 }
 /*---------------- LOADING PAGE  ---------------*/
 .loading-page{

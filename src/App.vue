@@ -13,14 +13,16 @@
 
     <div v-if="listDisplay==true" class="product-displacement">
       <Product :productElement="product"  v-for="product in ProductOrganizedData" :key="product.id"/>
+      <div v-if="isLandingPage==false">
+        <SortProduct :productSortType.sync="productSortType" />
+        <button v-on:click="seeMoreRequest" class="button" id="button-more"> more </button>
+      </div>
     </div>
 
     <div v-else class="product-displacement">
       <Product :productElement="productData.product" />
     </div>
-
-  <SortProduct :productSortType.sync="productSortType" v-if="isLandingPage==false"/>
-
+    <Footer/>
   </section>
 </template>
 
@@ -29,6 +31,7 @@ import Header from './components/Header.vue'
 import Product from './components/Product.vue'
 import LandingPage from './components/landingPage.vue'
 import SortProduct from './components/SortProduct.vue'
+import Footer from './components/Footer.vue'
 import {getProductById} from '@/services/api/requests.js'
 import {getProductByNutriscore} from '@/services/api/requests.js'
 
@@ -40,6 +43,7 @@ export default {
     Product,
     LandingPage,
     SortProduct,
+    Footer
   },
   data(){
         return{
@@ -104,12 +108,38 @@ export default {
         async sendGetRequestBySorting(){
         // envoie une requete par tri 
         this.listDisplay = true
+        this.pageCount = 1
         console.log('apppppp')
             console.log("request has been sent by sorting")
-            this.productDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)       
+            // PUT A SWITCH CASE
+            switch (this.valueSelected) {
+              case 'search-by-nutriscore':
+                console.log('nutriscore');
+                this.productDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)       
+                break;
+            }
         },
+
         async disappear(){
           this.$root.$emit('disappear', this.isLandingPage)
+        },
+        seeMoreWaiting(){
+          document.getElementById('button-more').innerHTML = 'Loading ...';
+        },
+        seeMoreNormal(){
+          document.getElementById('button-more').innerHTML = 'More';
+        },
+
+        async seeMoreRequest(){
+          this.pageCount +=1
+          this.seeMoreWaiting();
+          let productDataSortedCopy = []
+          let newProductsDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)
+          this.seeMoreNormal()
+          productDataSortedCopy =  this.productDataSorted.products.concat(newProductsDataSorted.products)
+          this.productDataSorted.products = productDataSortedCopy
+          console.log(productDataSortedCopy, "ESSSAII")
+          console.log(this.productDataSorted, "ESSSAII 2")
         },
 
         launchRequests(){
@@ -121,6 +151,7 @@ export default {
             if(this.searchInput!=""){
                 myFunction = this.sendGetRequestWithBareCode
             } else if (this.valueSelected!="" && this.searchInput=="") {
+
                 myFunction = this.sendGetRequestBySorting
             } 
             this.$emit("spinner")
@@ -152,11 +183,7 @@ html, body{
   display: flex;
   justify-content: space-around;
   height: 100%;
-  background-image: url("./assets/images/Vector.svg");
-  background-repeat: no-repeat;
-    background-size: 41%;
-    background-attachment: fixed;
-  background-position: top left;
+ 
 }
 .product-displacement{
     display: flex;
@@ -164,7 +191,18 @@ html, body{
     width: 100%;
     padding-inline: 150px;
     height: 100%;
+    background-image: url("./assets/images/Vector.svg");
+    background-repeat: no-repeat;
+    background-size: 41%;
+    background-attachment: fixed;
+    background-position: top left;
+    z-index: 0;
 }
 
+#button-more{
+  position: fixed;
+  bottom: 30px;
+  right: 240px;
+}
 
 </style>

@@ -1,5 +1,5 @@
 <template> 
-    <div id="sort-product">
+    <div v-if="isLoadingPage==false" id="sort-product">
 			<label for="dog-sort">Sort by  : </label>
 			<select :value="productSortType" @input="productSortTypeChanged" id="Az-sort">
                 <option value="AZName">Name from A to Z</option>
@@ -15,7 +15,17 @@ export default {
   props: {
     productSortType: {type: String, required:true}
   },
-
+  data(){
+    return{
+      isLoadingPage: false
+    }
+  },
+  mounted(){
+    this.$on("loadingPage", (data)=>{
+      this.isLoadingPage = data
+      console.log(this.isLoadingPage)
+    })
+  },
 
   methods:{
     productSortTypeChanged(event){
@@ -39,6 +49,7 @@ export default {
     bottom: 30px;
     right: 30px;
     font-weight: 600;
+    z-index: -1;
 }
 #Az-sort{
     border: none;
