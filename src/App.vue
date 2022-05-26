@@ -5,7 +5,12 @@
                   v-on:scoreGrade="changeScoreGrade"
                   v-on:requestState="launchRequests"
                   v-on:isLanding="changeLandingPage"/>
-    <Header ref='header' :isLandingPage="isLandingPage" 
+    <Header v-if="isLandingPage" ref='header' :isLandingPage="isLandingPage" 
+                  v-on:searchinputvalue="changeSearchInput"
+                  v-on:valueSelected="changeValueSelected"
+                  v-on:scoreGrade="changeScoreGrade"
+                  v-on:requestState="launchRequests"/>
+    <Header v-responsive.lg.xl ref='header' :isLandingPage="isLandingPage" 
                   v-on:searchinputvalue="changeSearchInput"
                   v-on:valueSelected="changeValueSelected"
                   v-on:scoreGrade="changeScoreGrade"
@@ -14,15 +19,19 @@
     <div v-if="listDisplay==true" class="product-displacement">
       <Product :productElement="product"  v-for="product in ProductOrganizedData" :key="product.id"/>
       <div v-if="isLandingPage==false">
-        <SortProduct :productSortType.sync="productSortType" />
+        <SortProduct v-responsive.lg.xl :productSortType.sync="productSortType" />
         <button v-on:click="seeMoreRequest" class="button" id="button-more"> more </button>
       </div>
+      
     </div>
 
     <div v-else class="product-displacement">
       <Product :productElement="productData.product" />
     </div>
-    <Footer/>
+    
+    <button v-responsive.sm.xs id="button-search" class="button" v-on:click="openHeader"> Search </button>
+
+    <Footer v-responsive.lg.xl/>
   </section>
 </template>
 
@@ -124,7 +133,7 @@ export default {
           this.$root.$emit('disappear', this.isLandingPage)
         },
         seeMoreWaiting(){
-          document.getElementById('button-more').innerHTML = 'Loading ...';
+          document.getElementById('button-more').innerHTML = 'Loading';
         },
         seeMoreNormal(){
           document.getElementById('button-more').innerHTML = 'More';
@@ -160,8 +169,15 @@ export default {
             myFunction((this.scoreGrade, this.pageCurrent)).then(() => this.disappear());
             this.searchInput = ""
         },
+        openHeader(){
+                let landing = document.querySelector(".landing-page");
+                let landingHeader = document.querySelector(".main-header");
+                let loader = document.querySelectorAll('.loader');
+                loader.forEach(element => element.style.display="none")
 
-        
+                landingHeader.style.display = 'block'
+                landing.style.height ='100%'
+        }        
       
     }
 }
@@ -203,6 +219,30 @@ html, body{
   position: fixed;
   bottom: 30px;
   right: 240px;
+}
+@media screen and (max-width: 600px) {
+  .product-displacement{
+    padding: 20px;
+    background-image: url('./assets/images/Main_BG.svg'); 
+    background-size: 200%;
+  }
+  #button-search{
+    top: unset;
+    left: 0;
+    bottom: 0;
+    position: fixed;
+
+  }
+  #button-more{
+      height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80px;
+      top:unset;
+      left: 0;
+      bottom: 35px;
+  }
 }
 
 </style>

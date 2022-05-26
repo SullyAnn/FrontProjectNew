@@ -100,4 +100,35 @@ export default {
     align-items: flex-end;
 }
 
+/*************  respponsive **************/
+@media screen and (max-width: 600px) {
+    .product-visuals-section{
+        width: 100%;
+        padding: 0;
+        height: 50%;
+        flex-direction: row-reverse;
+    }
+    .nutri-score > img{
+        width: 80px;
+    }
+    .eco-score > img, .nova-score > img {
+        width: 40px;
+    }
+    .eco-score:after, .nutri-score:after{
+        display: none;
+    }
+    .product-image{
+        width: 200px;
+        height: 200px;
+    }
+    .product-image > img{
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+    }
+    .product-scores{
+        flex-direction: column;
+    }
+}
+
 </style>

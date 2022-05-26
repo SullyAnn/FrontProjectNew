@@ -1,5 +1,5 @@
 <template>
-    <section id="content">
+    <section class="content">
         <ProductInfo :productItem="productElement"/>
         <ProductVisuals :productItem="productElement"/>
     </section>
@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style>
-#content{
+.content{
    display: flex;
     flex-direction: row;
     padding: 0;
@@ -33,4 +33,11 @@ export default {
     scroll-snap-align: start;
    
 }
+
+@media screen and (max-width: 600px) {
+    .content{
+        flex-direction: column;
+    }
+}
+
 </style>

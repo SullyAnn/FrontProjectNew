@@ -3,26 +3,26 @@
         <h1 class="product-name">{{productItem.product_name}}</h1>
         
         <ul class="product-info-list">
-            <li> <strong> Quantity </strong> 
+            <li> <strong> Quantity : </strong> 
                 <p class="product-quantity product-li-elements"> {{productItem.quantity}} </p>
             </li>
-            <li> <strong> Brand </strong> 
+            <li> <strong> Brand : </strong> 
                 <p class="product-brand produt-li-elements"> {{productItem.brands}} </p>
             </li>
-            <li> <strong> Allergens </strong> 
+            <li> <strong> Allergens : </strong> 
                 <p v-if="productItem.allergens == ''"> None </p>
                 <ul class="product-array" v-else>
                     <li class="product-component product-li-elements" > {{productItem.allergens.replaceAll("en:","")}} </li>
                 </ul>
             </li>
-            <li> <strong> Additives </strong> 
+            <li> <strong> Additives : </strong> 
                 <p v-if="productItem.additives_n == 0"> None </p>
                 <ul class="product-array" v-else>
                     <li class=" product-additifs product-li-elements" v-for="item in productItem.additives_tags" :key="item">{{item.replace('en:', '')}}&nbsp; </li>
                 </ul>
     
             </li>
-            <li> <strong> Location </strong> 
+            <li> <strong> Location  :</strong> 
                 <p v-if="productItem.countries_imported == '' "> None </p>
                 <p class="product-location product-li-elements" v-else> {{productItem.countries_imported}} </p>
             </li>
@@ -96,4 +96,44 @@ export default {
 li > p {
     margin: 0;
 }
+/*************  respponsive **************/
+@media screen and (max-width: 600px) {
+    .product-name{
+        font-size: 24px;
+        padding-block: 20px;
+        text-align: center;
+        width: 100%;
+    }
+    .product-info-list{
+        width: inherit;
+        margin: 0;
+
+    }
+    .product-info-list li{
+        justify-content: center;
+    }
+    .product-info-list, .product-info-list strong{
+        font-size: 12px;
+        padding: 0;
+        line-height: 1.5em;
+    }
+    .product-info-list strong{
+        margin-right: 2px;
+    }
+    .product-info-section{
+        width:100%;
+    }
+    .content{
+        flex-direction: column;
+    }
+    .nutri-score > img{
+        width: 40px;
+    }
+    .eco-score > img, .nova-score > img {
+        width: 20px;
+    }
+
+
+}
+
 </style>

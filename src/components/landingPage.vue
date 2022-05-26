@@ -65,5 +65,37 @@ export default {
     font-size: 64px;
     color: white;
 }
+/*************  respponsive **************/
+@media screen and (max-width: 600px) {
+    .landing-page{
+        background-size: cover;
+    }
+    .main-header{
+        height: 30vh;
+        justify-content: space-evenly;
+    }
+    .main-header > h1 {
+        font-size: 42px;
+    }
+    .search-input{
+        width: fit-content;
+        border-bottom: 1px solid;
+    }
+    .search{
+        flex-direction: column;
+        height: 30vh;
+        justify-content: space-around;
+        border: none;
+    }
+    .button{
+        position: absolute;
+        left: -10px;
+        top: 83px;
+    }
+    .loader{
+        margin: 0;
+        bottom: 0;
+    }
+}
 
 </style>
