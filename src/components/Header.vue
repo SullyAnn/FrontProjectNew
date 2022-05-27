@@ -7,7 +7,7 @@
         <h1 v-else class="header-content"> FOOD INFO</h1>
 
         <div class="search">
-            <button class="button" v-if="searchInput" @click="clearSearch"> X </button>
+            <button class="button" v-show="searchInput" @click="clearSearch"> X </button>
             <input v-model="searchInput"  class="search-input" type="text" name="user" placeholder="Tap the product bare code">
             <select v-model="valueSelected"  id="search-by-score">
                 <option disabled value=""> Option de tri </option>
