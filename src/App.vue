@@ -21,8 +21,7 @@
       <div v-if="isLandingPage==false">
         <SortProduct v-responsive.lg.xl :productSortType.sync="productSortType" />
         <button v-on:click="seeMoreRequest" class="button" id="button-more"> more </button>
-      </div>
-      
+      </div>  
     </div>
 
     <div v-else class="product-displacement">
@@ -68,32 +67,28 @@ export default {
             productSortType: localStorage.getItem("productSortType") || "AZName"
         }
     },
-      watch: {
-    productSortType: function(newValue){
-      localStorage.setItem("productSortType", newValue)
-    }
-  }, 
+    watch: {
+      productSortType: function(newValue){
+        localStorage.setItem("productSortType", newValue)
+      }
+    }, 
     computed: {
       ProductOrganizedData(){
+        // Sort Data by AZ or ZA name
         let productDatas =  this.productDataSorted.products
-
         if(productDatas){
           const reversed = ['ZAName'].includes(this.productSortType)
           const comparator = (a,b) => a['product_name'].localeCompare(b['product_name'])
           productDatas = productDatas.sort(comparator)
           if(reversed) productDatas = productDatas.reverse()
-
         }     
-          return productDatas  
-          
-
+        return productDatas  
       }
     },
     methods: {
       changeSearchInput(value){
           this.searchInput = value;
           this.listDisplay = false
-          console.log(value, "searchInput in App ")
         },
       changeValueSelected(value){
         this.valueSelected = value
@@ -104,31 +99,20 @@ export default {
       changeLandingPage(value){
         this.isLandingPage = value;
       },
-
       async sendGetRequestWithBareCode() {
-        // envoie une requete avec le code barre
         this.listDisplay = false; 
-                console.log("request has been sent with bare code")
-                this.productData = await getProductById(this.searchInput)
-                console.log(this.productData.product)
-                
-                //this.$root.$emit('productData', this.productData);
-        },
-        async sendGetRequestBySorting(){
-        // envoie une requete par tri 
+        this.productData = await getProductById(this.searchInput)                
+      },
+      async sendGetRequestBySorting(){
         this.listDisplay = true
         this.pageCount = 1
-        console.log('apppppp')
-            console.log("request has been sent by sorting")
-            // PUT A SWITCH CASE
-            switch (this.valueSelected) {
-              case 'search-by-nutriscore':
-                console.log('nutriscore');
-                this.productDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)       
-                break;
-            }
+        // In case I want to add more input button
+        switch (this.valueSelected) {
+          case 'search-by-nutriscore':
+            this.productDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)       
+            break;
+          }
         },
-
         async disappear(){
           this.$root.$emit('disappear', this.isLandingPage)
         },
@@ -138,7 +122,6 @@ export default {
         seeMoreNormal(){
           document.getElementById('button-more').innerHTML = 'More';
         },
-
         async seeMoreRequest(){
           this.pageCount +=1
           this.seeMoreWaiting();
@@ -147,38 +130,27 @@ export default {
           this.seeMoreNormal()
           productDataSortedCopy =  this.productDataSorted.products.concat(newProductsDataSorted.products)
           this.productDataSorted.products = productDataSortedCopy
-          console.log(productDataSortedCopy, "ESSSAII")
-          console.log(this.productDataSorted, "ESSSAII 2")
         },
-
         launchRequests(){
-        // lance les requetes par code bare ou par tri
-            let myFunction;
-            console.log("launchRequest")
-
-
-            if(this.searchInput!=""){
-                myFunction = this.sendGetRequestWithBareCode
-            } else if (this.valueSelected!="" && this.searchInput=="") {
-
-                myFunction = this.sendGetRequestBySorting
-            } 
-            this.$emit("spinner")
-            console.log(this.valueSelected)
-            console.log(myFunction)
-            myFunction((this.scoreGrade, this.pageCurrent)).then(() => this.disappear());
-            this.searchInput = ""
+          let myFunction;
+          if(this.searchInput!=""){
+              myFunction = this.sendGetRequestWithBareCode
+          } 
+          else if (this.valueSelected!="" && this.searchInput=="") {
+            myFunction = this.sendGetRequestBySorting
+          } 
+          this.$emit("spinner")
+          myFunction((this.scoreGrade, this.pageCurrent)).then(() => this.disappear());
+          this.searchInput = ""
         },
         openHeader(){
-                let landing = document.querySelector(".landing-page");
-                let landingHeader = document.querySelector(".main-header");
-                let loader = document.querySelectorAll('.loader');
-                loader.forEach(element => element.style.display="none")
-
-                landingHeader.style.display = 'block'
-                landing.style.height ='100%'
-        }        
-      
+          let landing = document.querySelector(".landing-page");
+          let landingHeader = document.querySelector(".main-header");
+          let loader = document.querySelectorAll('.loader');
+          loader.forEach(element => element.style.display="none")
+          landingHeader.style.display = 'block'
+          landing.style.height ='100%'
+        }          
     }
 }
 </script>

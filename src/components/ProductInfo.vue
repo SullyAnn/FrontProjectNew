@@ -37,20 +37,6 @@ export default {
     props: {
         productItem: {type:Object}
     },
-   /* data(){
-        return{
-            productData : [],
-        }
-    },
-      mounted(){
-        this.productData = this.productItem
-    }
-
-   /* mounted() {
-        this.$root.$on('productData', data => {
-        this.productData = data;
-        });
-    }*/
 }
 </script>
 

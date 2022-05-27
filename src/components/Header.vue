@@ -1,6 +1,5 @@
 <template>
     <header >
-        
         <!--- Titre Landing page --->
         <h1 v-if="isLandingPage"> FOOD INFO </h1>
         <!--- Titre Content page --->
@@ -21,7 +20,6 @@
                 <option value="d">D</option>
                 <option value="e">E</option>
             </select>
-            
 
             <button v-if="isLandingPage" 
             
@@ -40,13 +38,6 @@
 </template>
 
 <script>
-// au clic sur l'icone rechercher ou touche Entrer on veut envoyer requete GET 
-// on veut stocker l'input de l'utilisateur et le mettre dans une variable idProduct qui sera dans la requete que l'on va envoyer 
-/*import {getProductById} from '@/services/api/requests.js'
-import {getProductByNutriscore} from '@/services/api/requests.js'*/
-
-
-
 export default {
     name: 'Header',
     props: {
@@ -68,80 +59,55 @@ export default {
     },
     methods: {
         onValueSelectedChanged(){
-        //this.valueSelected = event.target.value
             this.$emit('valueSelected', this.valueSelected)
-            console.log("emit value")
-            console.log(this.valueSelected)
         },
         onScoreGradeChanged(){
             this.$emit('scoreGrade', this.scoreGrade)
-            console.log ("emit score")
-
-           // console.log(this.scoreGrade)
         },
         changeRequestState(){
-           this.isRequestLaunched = true
-           // réunir les functions ds un tableau
-
+            this.isRequestLaunched = true
             if(this.searchInput!=""){
                 this.onInputChanged()
-           } else if (this.valueSelected!="" && this.searchInput==""){
+            }else if (this.valueSelected!="" && this.searchInput==""){
                 this.onValueSelectedChanged(this.valueSelected)
                 this.onScoreGradeChanged(this.scoreGrade)
-           }
-           this.$emit("requestState")
-           this.$emit('isLanding', false)
-            console.log('changeRequestState')
-            console.log(this.valueSelected)
-            console.log(this.scoreGrade)
+            }
+            this.$emit("requestState")
+            this.$emit('isLanding', false)
             this.createSpinner()
-            
-            //console.log(this.isRequestLaunched)
         },
         onInputChanged: function(){
             this.$emit("searchinputvalue", this.searchInput)
-            console.log(this.searchInput)
         },
-
-
         disappear(isLanding){
-        // fait disparaitre les pages de chargement 
-        // on envoie false ds app comme ça on display none le sort az
             isLanding = this.isLandingPage 
             let loadingPage =  document.querySelector('.loading-page')
             let loader = document.querySelector('.loader')
-        // si Landing page
             if(isLanding){
                 let landing = document.querySelector(".landing-page");
                 let landingHeader = document.querySelector(".main-header");
-
                 landingHeader.style.display = 'none'
                 landing.style.height ='0'
             } else {
-        // si page de chargement
                 loadingPage.classList.replace('loading-in','loading-out')
                 if (loader.parentNode) {
-                loader.parentNode.removeChild(loader);
+                    loader.parentNode.removeChild(loader);
                 }
             }        
         }, 
-        
         createSpinner(){
-        // crée un loader qui permet de faire patienter l'utilisateur
             let spinner =  document.createElement('div')
             let header = document.querySelector('header')
             header.appendChild(spinner)
             spinner.classList.add('loader')
         },
         loadingPage(){
-        // crée une page de chargement 
            this.$emit("loadingPage", true)
 
             let loadingPage =  document.querySelector('.loading-page')
             let spinner =  document.createElement('div')
             spinner.classList.add('loader')
 
-            console.log(loadingPage)
             if(loadingPage.classList.contains('loading-out')){
                 loadingPage.classList.replace('loading-out', 'loading-in')
                 loadingPage.appendChild(spinner)

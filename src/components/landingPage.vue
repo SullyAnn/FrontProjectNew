@@ -24,17 +24,12 @@ export default {
         Header,
     },
     methods: {
-        changeSearchInput(){
-            console.log("test landing page")
-        },
         launchDisappear(value){
             this.$refs.header.disappear(value)
-        }
-        
+        } 
     }
 }
 </script>
-
 
 <style>
 

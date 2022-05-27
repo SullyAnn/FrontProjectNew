@@ -23,10 +23,8 @@ export default {
   mounted(){
     this.$on("loadingPage", (data)=>{
       this.isLoadingPage = data
-      console.log(this.isLoadingPage)
     })
   },
-
   methods:{
     productSortTypeChanged(event){
       this.$emit('update:productSortType', event.target.value)
