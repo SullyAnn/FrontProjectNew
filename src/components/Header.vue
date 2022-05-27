@@ -58,6 +58,8 @@ export default {
         })
     },
     methods: {
+
+        /************** Search functions ************/
         onValueSelectedChanged(){
             this.$emit('valueSelected', this.valueSelected)
         },
@@ -79,6 +81,8 @@ export default {
         onInputChanged: function(){
             this.$emit("searchinputvalue", this.searchInput)
         },
+
+        /***************** Event style functions *************/
         disappear(isLanding){
             isLanding = this.isLandingPage 
             let loadingPage =  document.querySelector('.loading-page')
@@ -122,10 +126,6 @@ export default {
     },
 }
 </script>
- 
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<!-- props = attribut du component p -->
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&display=swap');

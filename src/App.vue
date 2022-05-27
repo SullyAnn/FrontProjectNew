@@ -99,6 +99,9 @@ export default {
       changeLandingPage(value){
         this.isLandingPage = value;
       },
+
+      /************ Requests functions ************/ 
+
       async sendGetRequestWithBareCode() {
         this.listDisplay = false; 
         this.productData = await getProductById(this.searchInput)                
@@ -112,45 +115,52 @@ export default {
             this.productDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)       
             break;
           }
-        },
-        async disappear(){
-          this.$root.$emit('disappear', this.isLandingPage)
-        },
-        seeMoreWaiting(){
-          document.getElementById('button-more').innerHTML = 'Loading';
-        },
-        seeMoreNormal(){
-          document.getElementById('button-more').innerHTML = 'More';
-        },
-        async seeMoreRequest(){
-          this.pageCount +=1
-          this.seeMoreWaiting();
-          let productDataSortedCopy = []
-          let newProductsDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)
-          this.seeMoreNormal()
-          productDataSortedCopy =  this.productDataSorted.products.concat(newProductsDataSorted.products)
-          this.productDataSorted.products = productDataSortedCopy
-        },
-        launchRequests(){
-          let myFunction;
-          if(this.searchInput!=""){
-              myFunction = this.sendGetRequestWithBareCode
-          } 
-          else if (this.valueSelected!="" && this.searchInput=="") {
-            myFunction = this.sendGetRequestBySorting
-          } 
-          this.$emit("spinner")
-          myFunction((this.scoreGrade, this.pageCurrent)).then(() => this.disappear());
-          this.searchInput = ""
-        },
-        openHeader(){
-          let landing = document.querySelector(".landing-page");
-          let landingHeader = document.querySelector(".main-header");
-          let loader = document.querySelectorAll('.loader');
-          loader.forEach(element => element.style.display="none")
-          landingHeader.style.display = 'block'
+      },
+      launchRequests(){
+        let myFunction;
+        if(this.searchInput!=""){
+            myFunction = this.sendGetRequestWithBareCode
+        } 
+        else if (this.valueSelected!="" && this.searchInput=="") {
+          myFunction = this.sendGetRequestBySorting
+        } 
+        this.$emit("spinner")
+        myFunction((this.scoreGrade, this.pageCurrent)).then(() => this.disappear());
+        this.searchInput = ""
+      },
+
+        /*********** More button fuctions *************/ 
+
+      seeMoreWaiting(){
+        document.getElementById('button-more').innerHTML = 'Loading';
+      },
+      seeMoreNormal(){
+        document.getElementById('button-more').innerHTML = 'More';
+      },
+      async seeMoreRequest(){
+        this.pageCount +=1
+        this.seeMoreWaiting();
+        let productDataSortedCopy = []
+        let newProductsDataSorted = await getProductByNutriscore(this.scoreGrade, this.pageCount)
+        this.seeMoreNormal()
+        productDataSortedCopy =  this.productDataSorted.products.concat(newProductsDataSorted.products)
+        this.productDataSorted.products = productDataSortedCopy
+      },
+     
+      /********** Event style functions *********/ 
+
+      async disappear(){
+        this.$root.$emit('disappear', this.isLandingPage)
+      },
+
+      openHeader(){
+        let landing = document.querySelector(".landing-page");
+        let landingHeader = document.querySelector(".main-header");
+        let loader = document.querySelectorAll('.loader');
+        loader.forEach(element => element.style.display="none")
+        landingHeader.style.display = 'block'
           landing.style.height ='100%'
-        }          
+      }          
     }
 }
 </script>
